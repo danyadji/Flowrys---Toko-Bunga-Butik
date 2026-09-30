@@ -12,6 +12,7 @@ const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export function CategoryManager({ categories, onChanged }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [startingPrice, setStartingPrice] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [pendingFile, setPendingFile] = useState(null);
   const [editing, setEditing] = useState(null);
@@ -21,6 +22,7 @@ export function CategoryManager({ categories, onChanged }) {
   function resetForm() {
     setName("");
     setDescription("");
+    setStartingPrice("");
     setImageUrl("");
     setPendingFile(null);
     setEditing(null);
@@ -30,6 +32,7 @@ export function CategoryManager({ categories, onChanged }) {
     setEditing(category);
     setName(category.name);
     setDescription(category.description ?? "");
+    setStartingPrice(category.startingPrice ? String(category.startingPrice) : "");
     setImageUrl(category.image && category.image.startsWith("https://") ? category.image : "");
     setPendingFile(null);
     setError("");
@@ -51,12 +54,19 @@ export function CategoryManager({ categories, onChanged }) {
       return;
     }
     setBusy(true);
+    const priceValue = startingPrice === "" ? null : Number(startingPrice);
+    if (priceValue !== null && (!Number.isInteger(priceValue) || priceValue < 1)) {
+      setError("Harga mulai harus bilangan bulat lebih dari 0.");
+      setBusy(false);
+      return;
+    }
     try {
       if (editing) {
         await productService.updateCategory(editing.id, {
           name: name.trim(),
           description: description.trim() || null,
           image: imageUrl.trim() || undefined,
+          starting_price: priceValue,
         });
         if (pendingFile) {
           await uploadFile(editing.id, pendingFile);
@@ -68,6 +78,7 @@ export function CategoryManager({ categories, onChanged }) {
           slug: slugify(name.trim()),
           description: description.trim() || undefined,
           image: imageUrl.trim() || undefined,
+          startingPrice: priceValue,
         });
         if (pendingFile) {
           await uploadFile(created.id, pendingFile);
@@ -161,6 +172,16 @@ export function CategoryManager({ categories, onChanged }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Contoh: Paket Wedding"
           maxLength={100}
+        />
+        <Input
+          id="category-starting-price"
+          label="Harga mulai (opsional)"
+          type="number"
+          min={1}
+          step={1}
+          value={startingPrice}
+          onChange={(e) => setStartingPrice(e.target.value)}
+          placeholder="Kosong = otomatis termurah"
         />
         <div>
           <label htmlFor="category-description" className="mb-1.5 block text-[13px] font-semibold text-plum-900">

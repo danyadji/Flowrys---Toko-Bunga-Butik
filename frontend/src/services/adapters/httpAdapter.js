@@ -144,7 +144,14 @@ export const httpAdapter = {
 
   async getCategories() {
     const json = await request("/categories");
-    return json.data;
+    return json.data.map((c) => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      image: c.image ?? null,
+      description: c.description ?? null,
+      startingPrice: c.starting_price ?? null,
+    }));
   },
 
   async createProduct(input) {
@@ -230,7 +237,7 @@ export const httpAdapter = {
     const json = await request("/admin/categories", {
       method: "POST",
       auth: true,
-      body: { name: input.name, slug: input.slug || undefined, image: input.image || undefined, description: input.description || undefined },
+      body: { name: input.name, slug: input.slug || undefined, image: input.image || undefined, description: input.description || undefined, starting_price: input.startingPrice ?? undefined },
     });
     return json.data;
   },

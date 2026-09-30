@@ -171,10 +171,12 @@ function CategorySection() {
       <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
         {(categories ?? []).map((category, i) => {
           const inCategory = products.filter((p) => p.categoryId === category.id);
-          const minPrice =
+          const cheapest =
             inCategory.length > 0
               ? Math.min(...inCategory.map((p) => p.price))
               : 0;
+          // Harga manual diutamakan; kosong berarti otomatis termurah.
+          const minPrice = category.startingPrice ?? cheapest;
           return (
             <CategoryCard
               key={category.id}

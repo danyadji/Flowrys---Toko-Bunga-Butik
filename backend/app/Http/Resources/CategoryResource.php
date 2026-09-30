@@ -16,6 +16,7 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'image' => ImageUrl::url($this->image),
             'description' => $this->description,
+            'starting_price' => $this->starting_price === null ? null : (int) $this->starting_price,
         ];
     }
 }

@@ -25,6 +25,7 @@ class CategoryController extends Controller
             'slug' => ['nullable', 'string', 'max:120', 'regex:/^[a-z0-9-]+$/', Rule::unique('categories', 'slug')],
             'image' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string', 'max:500'],
+            'starting_price' => ['nullable', 'integer', 'min:1'],
         ], [
             'slug.unique' => 'Slug sudah dipakai kategori lain.',
         ]);
@@ -34,6 +35,7 @@ class CategoryController extends Controller
             'slug' => $this->uniqueSlug($data['slug'] ?? Str::slug($data['name'])),
             'image' => $data['image'] ?? null,
             'description' => $data['description'] ?? null,
+            'starting_price' => $data['starting_price'] ?? null,
         ]);
 
         return (new CategoryResource($category))->response()->setStatusCode(201);
@@ -46,6 +48,7 @@ class CategoryController extends Controller
             'slug' => ['sometimes', 'string', 'max:120', 'regex:/^[a-z0-9-]+$/', Rule::unique('categories', 'slug')->ignore($category->id)],
             'image' => ['nullable', 'string', 'max:500'],
             'description' => ['nullable', 'string', 'max:500'],
+            'starting_price' => ['nullable', 'integer', 'min:1'],
         ], [
             'slug.unique' => 'Slug sudah dipakai kategori lain.',
         ]);
