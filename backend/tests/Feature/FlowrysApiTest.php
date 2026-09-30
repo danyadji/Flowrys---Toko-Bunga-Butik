@@ -132,8 +132,13 @@ class FlowrysApiTest extends TestCase
         $this->assertSame('paket-wedding', $created->json('data.slug'));
         $id = $created->json('data.id');
 
-        $this->putJson("/api/v1/admin/categories/{$id}", ['name' => 'Paket Lamaran'], $headers)
-            ->assertOk();
+        $this->putJson("/api/v1/admin/categories/{$id}", ['name' => 'Paket Lamaran', 'description' => 'Khusus lamaran.'], $headers)
+            ->assertOk()
+            ->assertJsonPath('data.description', 'Khusus lamaran.');
+
+        $this->postJson("/api/v1/admin/categories/{$id}/image", [
+            'image' => UploadedFile::fake()->image('kategori.jpg', 600, 600),
+        ], $headers)->assertCreated()->assertJsonPath('url', fn ($url) => str_starts_with($url, 'http'));
 
         // Kategori berisi produk tidak boleh dihapus.
         $category = Category::where('slug', 'paket-wedding')->first();

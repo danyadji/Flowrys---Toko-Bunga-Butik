@@ -230,7 +230,7 @@ export const httpAdapter = {
     const json = await request("/admin/categories", {
       method: "POST",
       auth: true,
-      body: { name: input.name, slug: input.slug || undefined },
+      body: { name: input.name, slug: input.slug || undefined, image: input.image || undefined, description: input.description || undefined },
     });
     return json.data;
   },
@@ -243,6 +243,18 @@ export const httpAdapter = {
       body: input,
     });
     return json.data;
+  },
+
+  async uploadCategoryImage(id, file) {
+    categoryCache = null;
+    const form = new FormData();
+    form.append("image", file);
+    const json = await request(`/admin/categories/${id}/image`, {
+      method: "POST",
+      auth: true,
+      body: form,
+    });
+    return json;
   },
 
   async deleteCategory(id) {

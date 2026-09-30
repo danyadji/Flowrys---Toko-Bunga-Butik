@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends JsonResource
 {
@@ -27,21 +27,9 @@ class ProductResource extends JsonResource
         ];
     }
 
-    // Path absolut (http) dibiarkan. Path /images/* milik frontend
-    // dibiarkan relatif. File storage dijadikan URL absolut ke backend
-    // agar bisa dimuat dari domain mana pun.
+    // URL gambar terpusat di App\Support\ImageUrl agar konsisten.
     public static function imageUrl(string $path): string
     {
-        if (str_starts_with($path, 'http')) {
-            return $path;
-        }
-        if (str_starts_with($path, '/images/')) {
-            return $path;
-        }
-        if (str_starts_with($path, '/storage/')) {
-            return url($path);
-        }
-
-        return url(Storage::url($path));
+        return (string) ImageUrl::url($path);
     }
 }

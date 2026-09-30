@@ -183,7 +183,7 @@ function CategorySection() {
               count={inCategory.length}
               minPrice={minPrice}
               illustration={illustrations[category.slug]}
-              description={categoryDescriptions[category.slug]}
+              description={category.description || categoryDescriptions[category.slug]}
               offset={i % 2 === 1}
             />
           );

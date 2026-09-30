@@ -14,10 +14,10 @@ class FlowrysSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Buket Bunga', 'slug' => 'buket'],
-            ['name' => 'Bunga Papan', 'slug' => 'bunga-papan'],
-            ['name' => 'Bunga Meja', 'slug' => 'bunga-meja'],
-            ['name' => 'Hampers', 'slug' => 'hampers'],
+            ['name' => 'Buket Bunga', 'slug' => 'buket', 'description' => 'Buket tangan untuk wisuda, ulang tahun, dan pernyataan cinta.'],
+            ['name' => 'Bunga Papan', 'slug' => 'bunga-papan', 'description' => 'Papan ucapan untuk pembukaan toko, pernikahan, dan duka cita.'],
+            ['name' => 'Bunga Meja', 'slug' => 'bunga-meja', 'description' => 'Vas dan pot kecil untuk meja kerja dan ruang tamu.'],
+            ['name' => 'Hampers', 'slug' => 'hampers', 'description' => 'Kotak hadiah berisi bunga dan camilan untuk orang tersayang.'],
         ];
         $categoryIds = [];
         foreach ($categories as $category) {

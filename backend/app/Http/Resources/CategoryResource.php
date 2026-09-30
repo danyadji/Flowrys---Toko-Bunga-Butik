@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -13,6 +14,8 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'image' => ImageUrl::url($this->image),
+            'description' => $this->description,
         ];
     }
 }

@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/categories', [AdminCategoryController::class, 'store']);
         Route::put('/categories/{category}', [AdminCategoryController::class, 'update']);
         Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy']);
+        Route::post('/categories/{category}/image', [AdminCategoryController::class, 'storeImage']);
         Route::post('/products', [AdminProductController::class, 'store']);
         Route::put('/products/{product}', [AdminProductController::class, 'update']);
         Route::delete('/products/{product}', [AdminProductController::class, 'destroy']);
