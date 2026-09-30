@@ -5,6 +5,7 @@ import { useCartStore } from "../../features/cart/cartStore.js";
 import logo from "../../assets/logo.svg";
 
 const menu = [
+  { to: "/", label: "Beranda" },
   { to: "/koleksi", label: "Koleksi" },
   { to: "/#cara-pesan", label: "Cara Pesan" },
   { to: "/#kontak", label: "Kontak" },
