@@ -75,7 +75,7 @@ class ProductController extends Controller
         ]);
 
         return response()->json(
-            ['path' => $path, 'url' => Storage::url($path), 'id' => $image->id],
+            ['path' => $path, 'url' => ProductResource::imageUrl($path), 'id' => $image->id],
             201
         );
     }

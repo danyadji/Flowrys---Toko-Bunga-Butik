@@ -27,13 +27,21 @@ class ProductResource extends JsonResource
         ];
     }
 
-    // Path absolut (storage) dijadikan URL penuh, path frontend dibiarkan.
+    // Path absolut (http) dibiarkan. Path /images/* milik frontend
+    // dibiarkan relatif. File storage dijadikan URL absolut ke backend
+    // agar bisa dimuat dari domain mana pun.
     public static function imageUrl(string $path): string
     {
-        if (str_starts_with($path, 'http') || str_starts_with($path, '/')) {
+        if (str_starts_with($path, 'http')) {
             return $path;
         }
+        if (str_starts_with($path, '/images/')) {
+            return $path;
+        }
+        if (str_starts_with($path, '/storage/')) {
+            return url($path);
+        }
 
-        return Storage::url($path);
+        return url(Storage::url($path));
     }
 }

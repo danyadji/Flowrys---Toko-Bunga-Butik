@@ -118,7 +118,7 @@ class FlowrysApiTest extends TestCase
 
         $this->postJson("/api/v1/admin/products/{$product->id}/images", [
             'image' => UploadedFile::fake()->image('foto.jpg', 800, 1000),
-        ], $headers)->assertCreated();
+        ], $headers)->assertCreated()->assertJsonPath('url', fn ($url) => str_starts_with($url, 'http'));
 
         Storage::disk('public')->assertCount('products', 1);
     }
