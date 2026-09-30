@@ -1,44 +1,9 @@
 import { useState } from "react";
 import { ImagePlus, Link2, X } from "lucide-react";
 
-// Input gambar admin (M4-07, M6-13): URL https atau unggah file.
-// Mode demo: file dikompres di klien menjadi data URL.
-// Mode API: file diunggah ke server lewat onUploadFile (edit langsung,
-// tambah setelah produk dibuat). Hanya JPEG/PNG/WebP, SVG ditolak.
+// Input gambar admin: URL https atau unggah file ke server.
+// Hanya JPEG/PNG/WebP (maks 2MB per file), SVG ditolak server.
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"];
-const MAX_DIMENSION = 1200;
-const MAX_DATA_URL = 1_200_000;
-
-function compressImage(file) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      try {
-        const scale = Math.min(1, MAX_DIMENSION / Math.max(img.width, img.height));
-        const canvas = document.createElement("canvas");
-        canvas.width = Math.round(img.width * scale);
-        canvas.height = Math.round(img.height * scale);
-        canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
-        URL.revokeObjectURL(url);
-        if (dataUrl.length > MAX_DATA_URL) {
-          reject(new Error("Hasil kompresi masih di atas 1MB. Pakai foto yang lebih kecil atau input URL."));
-        } else {
-          resolve(dataUrl);
-        }
-      } catch (err) {
-        URL.revokeObjectURL(url);
-        reject(err);
-      }
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("File gambar tidak bisa dibaca."));
-    };
-    img.src = url;
-  });
-}
 
 export function ImageInput({
   value = [],
@@ -63,7 +28,7 @@ export function ImageInput({
   }
 
   function addImage(src) {
-    if (value.length >= 6) {
+    if (value.length + serverImages.length + pendingCount >= 6) {
       setLocalError("Maksimal 6 gambar.");
       return;
     }
@@ -84,17 +49,16 @@ export function ImageInput({
   async function addFiles(files) {
     for (const file of files) {
       if (!checkType(file)) continue;
-      // Mode API tambah: file ditampung, diunggah setelah produk dibuat.
       if (onSelectPendingFiles) {
         onSelectPendingFiles(file);
         continue;
       }
       setBusy(true);
       try {
-        const src = onUploadFile ? await onUploadFile(file) : await compressImage(file);
+        const src = await onUploadFile(file);
         addImage(src);
       } catch (err) {
-        setLocalError(err.message ?? "Gagal memproses gambar.");
+        setLocalError(err.message ?? "Gagal mengunggah gambar.");
       } finally {
         setBusy(false);
       }
@@ -172,7 +136,7 @@ export function ImageInput({
 
       <label className="btn-outline mt-2 inline-flex cursor-pointer">
         <ImagePlus size={17} aria-hidden="true" />
-        {busy ? "Memproses..." : "Unggah foto"}
+        {busy ? "Mengunggah..." : "Unggah foto"}
         <input
           type="file"
           accept="image/jpeg,image/png,image/webp"
@@ -185,9 +149,7 @@ export function ImageInput({
         />
       </label>
       <p className="mt-1.5 text-[12px] text-ink-muted">
-        {onUploadFile || onSelectPendingFiles
-          ? "Foto tersimpan di server (maks 2MB per file)."
-          : "Unggahan dikompres otomatis (maks 1200px, JPEG). Utamakan URL agar penyimpanan browser tidak cepat penuh."}
+        Foto tersimpan di server (maks 2MB per file).
       </p>
       {message ? (
         <p role="alert" className="mt-1 text-[13px] text-danger">{message}</p>

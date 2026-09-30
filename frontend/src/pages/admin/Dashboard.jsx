@@ -9,25 +9,21 @@ import { ProductForm } from "../../features/admin/ProductForm.jsx";
 import { useAdminMutations } from "../../features/admin/useAdminMutations.js";
 import { useCategories, useCatalog } from "../../features/products/hooks/useCatalog.js";
 import { productService } from "../../services/productService.js";
-import { env } from "../../config/env.js";
 
 export default function AdminDashboard() {
-  const apiMode = !env.isDemo;
   const { data: categories = [] } = useCategories();
   const { data: catalog } = useCatalog();
-  const { saveProduct, removeProduct, toggleAvailability, resetDemoData } =
-    useAdminMutations();
+  const { saveProduct, removeProduct, toggleAvailability } = useAdminMutations();
 
   const [formState, setFormState] = useState(null); // null | { product? }
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [resetOpen, setResetOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [serverImages, setServerImages] = useState([]);
 
   const existingSlugs = (catalog?.data ?? []).map((p) => ({ id: p.id, slug: p.slug }));
 
   useEffect(() => {
-    if (apiMode && formState?.product?.id) {
+    if (formState?.product?.id) {
       productService
         .listImages(formState.product.id)
         .then(setServerImages)
@@ -35,14 +31,14 @@ export default function AdminDashboard() {
     } else {
       setServerImages([]);
     }
-  }, [apiMode, formState]);
+  }, [formState]);
 
   async function handleFormSubmit(input, { files = [] } = {}) {
     setSaving(true);
     try {
       const saved = await saveProduct({ id: formState?.product?.id, input });
-      // Mode API tambah: unggah file yang ditampung setelah produk dibuat.
-      if (apiMode && files.length > 0 && saved?.id) {
+      // Mode tambah: unggah file yang ditampung setelah produk dibuat.
+      if (files.length > 0 && saved?.id) {
         const results = await Promise.allSettled(
           files.map((file) => productService.uploadImage(saved.id, file)),
         );
@@ -78,10 +74,7 @@ export default function AdminDashboard() {
   return (
     <>
       <Seo title="Dasbor Admin" description="Kelola katalog produk Flowrys." />
-      <AdminLayout
-        title="Produk"
-        onResetRequest={apiMode ? undefined : () => setResetOpen(true)}
-      >
+      <AdminLayout title="Produk">
         <div className="mb-4 flex justify-end">
           <button
             type="button"
@@ -113,10 +106,9 @@ export default function AdminDashboard() {
                 categories={categories}
                 existingSlugs={existingSlugs}
                 onSubmit={handleFormSubmit}
-                apiMode={apiMode}
                 serverImages={serverImages}
-                onUploadFile={apiMode ? handleUploadFile : undefined}
-                onDeleteServerImage={apiMode ? handleDeleteServerImage : undefined}
+                onUploadFile={handleUploadFile}
+                onDeleteServerImage={handleDeleteServerImage}
               />
             )}
           </Modal>
@@ -146,34 +138,6 @@ export default function AdminDashboard() {
                 }}
               >
                 Hapus
-              </button>
-            </div>
-          </Modal>
-        ) : null}
-
-        {resetOpen ? (
-          <Modal title="Reset data demo" onClose={() => setResetOpen(false)}>
-            <p className="text-[15px]">
-              Kembalikan katalog ke data awal? Semua perubahanmu akan hilang.
-            </p>
-            <div className="mt-5 flex gap-3">
-              <button
-                type="button"
-                className="btn-outline flex-1"
-                onClick={() => setResetOpen(false)}
-              >
-                Batal
-              </button>
-              <button
-                type="button"
-                className="btn-primary flex-1"
-                onClick={() => {
-                  resetDemoData()
-                    .then(() => setResetOpen(false))
-                    .catch(() => {});
-                }}
-              >
-                Reset
               </button>
             </div>
           </Modal>

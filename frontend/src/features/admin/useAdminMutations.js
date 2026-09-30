@@ -2,20 +2,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { productService } from "../../services/productService.js";
 import { toast } from "../../components/ui/Toast.jsx";
 
-export function isQuotaError(error) {
-  return (
-    error?.name === "QuotaExceededError" ||
-    error?.code === 22 ||
-    /quota/i.test(error?.message ?? "")
-  );
-}
-
-export function quotaMessage() {
-  return "Penyimpanan browser penuh. Hapus gambar unggahan (pakai URL https) lalu coba lagi.";
-}
-
-// Mutasi admin dengan invalidasi cache storefront (M4-10) dan penanganan
-// penyimpanan penuh (M4-12).
+// Mutasi admin dengan invalidasi cache storefront. Error API (422 validasi,
+// 401 sesi berakhir) diteruskan sebagai toast yang jelas.
 export function useAdminMutations() {
   const queryClient = useQueryClient();
 
@@ -25,8 +13,11 @@ export function useAdminMutations() {
   }
 
   function handleError(error, fallback) {
-    if (isQuotaError(error)) toast(quotaMessage());
-    else toast(fallback);
+    if (error?.code === "UNAUTHORIZED") {
+      toast("Sesi berakhir. Masuk lagi.");
+    } else {
+      toast(error?.message ?? fallback);
+    }
   }
 
   async function saveProduct({ id, input }) {
@@ -84,16 +75,5 @@ export function useAdminMutations() {
     }
   }
 
-  async function resetDemoData() {
-    try {
-      await productService.resetDemoData();
-      invalidate();
-      toast("Data demo dikembalikan ke awal.");
-    } catch (error) {
-      handleError(error, "Gagal mereset data.");
-      throw error;
-    }
-  }
-
-  return { saveProduct, removeProduct, toggleAvailability, resetDemoData };
+  return { saveProduct, removeProduct, toggleAvailability };
 }

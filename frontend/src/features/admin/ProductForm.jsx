@@ -36,15 +36,13 @@ function toFormValues(product) {
   };
 }
 
-// Satu form untuk tambah dan edit (M4-06, M6-13). Mode API: file baru
-// ditampung sebagai pratinjau lalu diunggah Dashboard setelah simpan
-// (tambah) atau langsung (ubah, lewat onUploadFile).
+// Satu form untuk tambah dan edit. File baru ditampung sebagai pratinjau
+// lalu diunggah setelah simpan (tambah) atau langsung (ubah).
 export function ProductForm({
   product,
   categories,
   existingSlugs,
   onSubmit,
-  apiMode = false,
   serverImages = [],
   onUploadFile,
   onDeleteServerImage,
@@ -55,7 +53,6 @@ export function ProductForm({
     register,
     handleSubmit,
     setValue,
-    setError,
     clearErrors,
     watch,
     formState: { errors, isSubmitting },
@@ -111,10 +108,6 @@ export function ProductForm({
       if (src.startsWith("blob:") && pendingFiles[src]) files.push(pendingFiles[src]);
       else urls.push(src);
     });
-    if (apiMode && urls.length === 0 && files.length === 0) {
-      setError("images", { message: "Minimal 1 gambar." });
-      return;
-    }
     onSubmit(toServiceInput({ ...values, images: urls }), { files });
   }
 
@@ -194,10 +187,10 @@ export function ProductForm({
         value={images}
         onChange={handleImagesChange}
         error={errors.images?.message}
-        serverImages={apiMode ? serverImages : []}
-        onDeleteServerImage={apiMode ? handleDeleteServerImage : undefined}
-        onUploadFile={apiMode && product ? handleUploadFile : undefined}
-        onSelectPendingFiles={apiMode && !product ? addPendingFile : undefined}
+        serverImages={serverImages}
+        onDeleteServerImage={handleDeleteServerImage}
+        onUploadFile={product ? handleUploadFile : undefined}
+        onSelectPendingFiles={product ? undefined : addPendingFile}
         pendingCount={Object.keys(pendingFiles).length}
       />
       <div className="flex flex-wrap gap-4">

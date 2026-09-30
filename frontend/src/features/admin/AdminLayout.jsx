@@ -1,23 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, RotateCcw } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { ToastHost } from "../../components/ui/Toast.jsx";
 import { authService } from "../../services/authService.js";
-import { STORAGE_KEY } from "../../services/adapters/localStorageAdapter.js";
 import logo from "../../assets/logo.svg";
 
-function storageMegabytes() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY) ?? "";
-    return raw.length / (1024 * 1024);
-  } catch {
-    return 0;
-  }
-}
-
-// Kerangka admin (M4-03): sidebar plum, banner demo, slot konten.
-export function AdminLayout({ title, onResetRequest, children }) {
+// Kerangka admin: sidebar plum, header, tombol logout, slot konten.
+export function AdminLayout({ title, children }) {
   const navigate = useNavigate();
-  const usageMb = storageMegabytes();
 
   async function handleLogout() {
     await authService.logout();
@@ -54,31 +43,6 @@ export function AdminLayout({ title, onResetRequest, children }) {
       </aside>
 
       <div className="flex-1 px-4 py-6 md:px-8 md:py-8">
-        <div className="mb-5 flex flex-col items-start justify-between gap-3 rounded-card bg-peach-200 p-4 sm:flex-row sm:items-center">
-          <p className="text-sm font-semibold text-plum-900">
-            {onResetRequest
-              ? "Demo mode: data disimpan di browser kamu."
-              : "Mode API: data tersimpan di server."}
-          </p>
-          {onResetRequest ? (
-            <button
-              type="button"
-              onClick={onResetRequest}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-plum-900 px-4 text-sm font-semibold text-plum-900 hover:bg-white/50"
-            >
-              <RotateCcw size={15} aria-hidden="true" />
-              Reset data demo
-            </button>
-          ) : null}
-        </div>
-
-        {usageMb > 3.5 ? (
-          <p role="alert" className="mb-5 rounded-card bg-peach-200 p-4 text-sm font-semibold text-plum-900">
-            Penyimpanan hampir penuh ({usageMb.toFixed(1)} MB). Pakai URL
-            gambar, bukan unggahan, agar tidak error.
-          </p>
-        ) : null}
-
         <h1 className="text-2xl md:text-3xl">{title}</h1>
         <div className="mt-5">{children}</div>
       </div>
