@@ -17,18 +17,34 @@ function apiToken() {
   }
 }
 
-async function request(path, { method = "GET", body, auth = false } = {}) {
+async function request(path, { method = "GET", body, auth = false, timeoutMs = 30000 } = {}) {
   const headers = { Accept: "application/json" };
   const isForm = body instanceof FormData;
   if (body !== undefined && !isForm) headers["Content-Type"] = "application/json";
   const token = apiToken();
   if (auth && token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${baseUrl()}${path}`, {
-    method,
-    headers,
-    body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
-  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let res;
+  try {
+    res = await fetch(`${baseUrl()}${path}`, {
+      method,
+      headers,
+      body: body === undefined ? undefined : isForm ? body : JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    const error = new Error(
+      err?.name === "AbortError"
+        ? "Server tidak merespons. Pastikan backend jalan lalu coba lagi."
+        : "Tidak tersambung ke server. Pastikan backend jalan.",
+    );
+    error.code = "NETWORK_ERROR";
+    throw error;
+  }
+  clearTimeout(timer);
 
   if (res.status === 404) {
     const error = new Error("Produk tidak ditemukan.");
