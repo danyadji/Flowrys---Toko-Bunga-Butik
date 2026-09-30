@@ -87,6 +87,10 @@ export function ProductForm({
           return nextMap;
         });
         URL.revokeObjectURL(src);
+      } else {
+        // URL milik server yang dibuang dari form ikut dihapus di server.
+        const entry = serverImages.find((img) => img.url === src);
+        if (entry) onDeleteServerImage?.(entry.id);
       }
     });
     setValue("images", next, { shouldValidate: true });

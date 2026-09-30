@@ -65,8 +65,9 @@ export default function AdminDashboard() {
     setServerImages((prev) =>
       prev.some((img) => img.id === uploaded.id) ? prev : [...prev, uploaded],
     );
-    // Kembalikan null agar URL tidak masuk daftar form (sudah ada di serverImages).
-    return null;
+    // Kembalikan URL agar masuk nilai form (lolos validasi minimal 1 gambar).
+    // Render mendedupe dengan daftar server sehingga tidak tampil ganda.
+    return json.url;
   }
 
   async function handleDeleteServerImage(imageId) {
