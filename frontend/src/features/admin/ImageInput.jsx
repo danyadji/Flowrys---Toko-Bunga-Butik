@@ -56,7 +56,9 @@ export function ImageInput({
       setBusy(true);
       try {
         const src = await onUploadFile(file);
-        addImage(src);
+        // null berarti pratinjau sudah ditangani pemanggil (daftar server).
+        if (src) addImage(src);
+        else setLocalError("");
       } catch (err) {
         setLocalError(err.message ?? "Gagal mengunggah gambar.");
       } finally {
@@ -66,7 +68,13 @@ export function ImageInput({
   }
 
   const message = error ?? localError;
-  const total = value.length + serverImages.length + pendingCount;
+  // URL yang sudah ada di daftar server tidak dirender ulang dari value
+  // agar satu foto tidak tampil dua kali.
+  const serverUrls = new Set(serverImages.map((image) => image.url));
+  const localOnly = value
+    .map((src, index) => ({ src, index }))
+    .filter(({ src }) => !serverUrls.has(src));
+  const total = serverImages.length + localOnly.length + pendingCount;
 
   return (
     <div>
@@ -94,19 +102,19 @@ export function ImageInput({
           ))}
         </ul>
       ) : null}
-      {value.length > 0 ? (
+      {localOnly.length > 0 ? (
         <ul className="mb-3 flex flex-wrap gap-2">
-          {value.map((src, i) => (
-            <li key={`${i}-${src.slice(0, 24)}`} className="relative">
+          {localOnly.map(({ src, index }) => (
+            <li key={`${index}-${src.slice(0, 24)}`} className="relative">
               <img
                 src={src}
-                alt={`Gambar produk ${i + 1}`}
+                alt={`Gambar produk ${index + 1}`}
                 className="h-20 w-20 rounded-2xl border border-line object-cover"
               />
               <button
                 type="button"
-                aria-label={`Hapus gambar ${i + 1}`}
-                onClick={() => onChange(value.filter((_, j) => j !== i))}
+                aria-label={`Hapus gambar ${index + 1}`}
+                onClick={() => onChange(value.filter((_, j) => j !== index))}
                 className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full bg-plum-900 text-white"
               >
                 <X size={14} aria-hidden="true" />

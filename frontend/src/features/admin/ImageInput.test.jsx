@@ -37,4 +37,16 @@ describe("ImageInput", () => {
       expect(onChange).toHaveBeenCalledWith(["/storage/foto.jpg"]);
     });
   });
+
+  it("tidak merender ganda URL yang sudah ada di daftar server", () => {
+    const { container } = render(
+      <ImageInput
+        value={["http://api/storage/foto.jpg"]}
+        onChange={() => {}}
+        serverImages={[{ id: 7, url: "http://api/storage/foto.jpg" }]}
+      />,
+    );
+    expect(container.querySelectorAll("img")).toHaveLength(1);
+    expect(container.textContent).toContain("Gambar (1/6)");
+  });
 });

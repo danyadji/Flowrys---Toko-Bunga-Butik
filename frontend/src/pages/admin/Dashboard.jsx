@@ -59,8 +59,11 @@ export default function AdminDashboard() {
     if (!productId) throw new Error("Simpan produk dulu sebelum mengunggah.");
     const json = await productService.uploadImage(productId, file);
     const uploaded = { id: json.id, url: json.url };
-    setServerImages((prev) => [...prev, uploaded]);
-    return json.url;
+    setServerImages((prev) =>
+      prev.some((img) => img.id === uploaded.id) ? prev : [...prev, uploaded],
+    );
+    // Kembalikan null agar URL tidak masuk daftar form (sudah ada di serverImages).
+    return null;
   }
 
   async function handleDeleteServerImage(imageId) {
