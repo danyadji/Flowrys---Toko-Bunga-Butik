@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Seo } from "../../components/Seo.jsx";
 import { Modal } from "../../components/ui/Modal.jsx";
 import { ToastHost, toast } from "../../components/ui/Toast.jsx";
 import { AdminLayout } from "../../features/admin/AdminLayout.jsx";
+import { CategoryManager } from "../../features/admin/CategoryManager.jsx";
 import { ProductTable } from "../../features/admin/ProductTable.jsx";
 import { ProductForm } from "../../features/admin/ProductForm.jsx";
 import { useAdminMutations } from "../../features/admin/useAdminMutations.js";
@@ -11,6 +13,7 @@ import { useCategories, useCatalog } from "../../features/products/hooks/useCata
 import { productService } from "../../services/productService.js";
 
 export default function AdminDashboard() {
+  const queryClient = useQueryClient();
   const { data: categories = [] } = useCategories();
   const { data: catalog } = useCatalog();
   const { saveProduct, removeProduct, toggleAvailability } = useAdminMutations();
@@ -75,23 +78,34 @@ export default function AdminDashboard() {
     <>
       <Seo title="Dasbor Admin" description="Kelola katalog produk Flowrys." />
       <AdminLayout title="Produk">
-        <div className="mb-4 flex justify-end">
-          <button
-            type="button"
-            className="btn-primary"
-            onClick={() => setFormState({ product: null })}
-          >
-            <Plus size={17} aria-hidden="true" />
-            Tambah produk
-          </button>
-        </div>
+        <div className="grid items-start gap-5 lg:grid-cols-[1fr_360px]">
+          <div>
+            <div className="mb-4 flex justify-end">
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => setFormState({ product: null })}
+              >
+                <Plus size={17} aria-hidden="true" />
+                Tambah produk
+              </button>
+            </div>
 
-        <ProductTable
-          categories={categories}
-          onEdit={(product) => setFormState({ product })}
-          onDelete={setDeleteTarget}
-          onToggleStock={(product) => toggleAvailability(product).catch(() => {})}
-        />
+            <ProductTable
+              categories={categories}
+              onEdit={(product) => setFormState({ product })}
+              onDelete={setDeleteTarget}
+              onToggleStock={(product) => toggleAvailability(product).catch(() => {})}
+            />
+          </div>
+          <CategoryManager
+            categories={categories}
+            onChanged={() => {
+              queryClient.invalidateQueries({ queryKey: ["categories"] });
+              queryClient.invalidateQueries({ queryKey: ["products"] });
+            }}
+          />
+        </div>
 
         {formState ? (
           <Modal

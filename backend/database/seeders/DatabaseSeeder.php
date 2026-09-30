@@ -17,12 +17,23 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(FlowrysSeeder::class);
 
-        // Akun admin demo lokal. Bukan untuk produksi (M6-S2).
-        User::factory()->create([
-            'name' => 'Admin Demo',
-            'email' => 'admin@demo.com',
-            'password' => 'demo123',
-            'role' => 'admin',
-        ]);
+        // Akun admin demo & admin utama.
+        User::firstOrCreate(
+            ['email' => 'admin@demo.com'],
+            [
+                'name' => 'Admin Demo',
+                'password' => 'demo123',
+                'role' => 'admin',
+            ]
+        );
+
+        User::firstOrCreate(
+            ['email' => 'admin2@flowrys.com'],
+            [
+                'name' => 'Admin Utama',
+                'password' => 'admin123',
+                'role' => 'admin',
+            ]
+        );
     }
 }

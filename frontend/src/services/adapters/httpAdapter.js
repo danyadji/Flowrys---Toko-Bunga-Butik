@@ -209,6 +209,31 @@ export const httpAdapter = {
     });
   },
 
+  async createCategory(input) {
+    categoryCache = null;
+    const json = await request("/admin/categories", {
+      method: "POST",
+      auth: true,
+      body: { name: input.name, slug: input.slug || undefined },
+    });
+    return json.data;
+  },
+
+  async updateCategory(id, input) {
+    categoryCache = null;
+    const json = await request(`/admin/categories/${id}`, {
+      method: "PUT",
+      auth: true,
+      body: input,
+    });
+    return json.data;
+  },
+
+  async deleteCategory(id) {
+    categoryCache = null;
+    await request(`/admin/categories/${id}`, { method: "DELETE", auth: true });
+  },
+
   async resetDemoData() {
     throw new Error("Reset hanya tersedia di mode demo.");
   },

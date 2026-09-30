@@ -123,6 +123,30 @@ class FlowrysApiTest extends TestCase
         Storage::disk('public')->assertCount('products', 1);
     }
 
+    public function test_crud_kategori(): void
+    {
+        $headers = ['Authorization' => 'Bearer '.$this->adminToken()];
+
+        $created = $this->postJson('/api/v1/admin/categories', ['name' => 'Paket Wedding'], $headers)
+            ->assertCreated();
+        $this->assertSame('paket-wedding', $created->json('data.slug'));
+        $id = $created->json('data.id');
+
+        $this->putJson("/api/v1/admin/categories/{$id}", ['name' => 'Paket Lamaran'], $headers)
+            ->assertOk();
+
+        // Kategori berisi produk tidak boleh dihapus.
+        $category = Category::where('slug', 'paket-wedding')->first();
+        Product::create([
+            'category_id' => $category->id, 'name' => 'X', 'slug' => 'x',
+            'price' => 1000,
+        ]);
+        $this->deleteJson("/api/v1/admin/categories/{$id}", [], $headers)->assertStatus(422);
+
+        $category->products()->delete();
+        $this->deleteJson("/api/v1/admin/categories/{$id}", [], $headers)->assertNoContent();
+    }
+
     public function test_login_dibatasi_laju(): void
     {
         User::factory()->create(['email' => 'admin@demo.com', 'role' => 'admin']);
