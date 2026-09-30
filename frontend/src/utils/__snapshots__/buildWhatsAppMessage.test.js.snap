@@ -1,0 +1,43 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`buildOrderMessage > format Ambil di toko tanpa field pengiriman 1`] = `
+"Halo Flowrys, saya ingin memesan:
+
+*Pesanan*
+1. Buket Rose Blush x1 - Rp250.000
+
+*Total: Rp250.000*
+
+*Data Pemesan*
+Nama: Sinta
+No. HP: 08123456789
+
+*Metode: Ambil di toko*
+Tanggal/Jam ambil: 14 Februari 2026, 10.00"
+`;
+
+exports[`buildOrderMessage > format Diantar memuat subtotal, ongkir manual, dan data acara 1`] = `
+"Halo Flowrys, saya ingin memesan:
+
+*Pesanan*
+1. Buket Rose Blush x1 - Rp250.000
+2. Hampers Sweet Day x2 - Rp720.000
+
+*Subtotal: Rp970.000*
+Ongkir: dikonfirmasi admin
+
+*Data Pemesan*
+Nama: Sinta
+No. HP: 08123456789
+
+*Metode: Diantar*
+Tujuan: Acara/Venue
+Acara/Lokasi: Pernikahan Rina & Dimas, Gedung Serbaguna X
+Penerima: Rina
+Alamat: Jl. Mawar No. 1
+Patokan: Lobi utama, hubungi panitia
+Tanggal/Jam tiba: 14 Februari 2026, 10.00
+
+*Kartu ucapan*
+"Selamat menempuh hidup baru""
+`;

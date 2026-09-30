@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Ilustrasi vas bunga">
+  <rect width="800" height="1000" rx="48" fill="#F5EEE9"/>
+  <ellipse cx="400" cy="880" rx="130" ry="18" fill="#4A2030" opacity="0.08"/>
+  <path d="M330 640 L360 860 L440 860 L470 640Z" fill="#E9E0F3"/>
+  <path d="M400 640 C398 540 398 440 400 350" stroke="#A9CFA0" stroke-width="14" stroke-linecap="round" fill="none"/>
+  <path d="M400 560 C350 545 320 515 312 470 C360 478 392 512 400 560Z" fill="#A9CFA0"/>
+  <path d="M400 520 C450 505 480 475 488 430 C440 438 408 472 400 520Z" fill="#A9CFA0"/>
+  <g transform="translate(400,300)">
+    <ellipse cx="0" cy="-52" rx="34" ry="48" fill="#F6C9D3"/>
+    <ellipse cx="50" cy="-16" rx="34" ry="48" fill="#F6C9D3" transform="rotate(72 50 -16)"/>
+    <ellipse cx="31" cy="42" rx="34" ry="48" fill="#E8A0B4" transform="rotate(144 31 42)"/>
+    <ellipse cx="-31" cy="42" rx="34" ry="48" fill="#E8A0B4" transform="rotate(216 -31 42)"/>
+    <ellipse cx="-50" cy="-16" rx="34" ry="48" fill="#F6C9D3" transform="rotate(288 -50 -16)"/>
+    <circle cx="0" cy="0" r="24" fill="#FCE5D0"/>
+  </g>
+  <circle cx="200" cy="220" r="10" fill="#F6C9D3"/>
+  <circle cx="600" cy="260" r="8" fill="#DCEBD5"/>
+  <circle cx="560" cy="700" r="10" fill="#FCE5D0"/>
+</svg>

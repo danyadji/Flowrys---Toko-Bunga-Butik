@@ -1,0 +1,16 @@
+{
+  "name": "Flowrys, Toko Bunga Butik",
+  "short_name": "Flowrys",
+  "description": "Pesan buket, bunga meja, dan hampers lewat WhatsApp.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF6F3",
+  "theme_color": "#4A2030",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
