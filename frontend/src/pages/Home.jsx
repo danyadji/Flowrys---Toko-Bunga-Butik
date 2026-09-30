@@ -18,7 +18,9 @@ import { buildWhatsAppLink } from "../config/store.js";
 import { formatRupiah } from "../utils/formatRupiah.js";
 import { formatSoldCount } from "../utils/formatSold.js";
 import { Badge } from "../components/ui/Badge.jsx";
-import heroPhoto from "../assets/hero-1.png";
+import heroLeft from "../assets/hero-left.svg";
+import heroRight from "../assets/hero-right.svg";
+import sparkle from "../assets/sparkle.svg";
 import buketImg from "../assets/buket-bunga.png";
 import papanImg from "../assets/bunga-papan.png";
 import mejaImg from "../assets/bunga-meja.png";
@@ -75,7 +77,9 @@ function HandUnderline() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto max-w-container px-4 pb-10 pt-12 text-center md:pb-14 md:pt-16">
+      <img src={sparkle} alt="" aria-hidden="true" className="animate-float absolute left-[12%] top-24 hidden h-4 w-4 sm:block" />
+      <img src={sparkle} alt="" aria-hidden="true" className="animate-float absolute right-[14%] top-40 hidden h-3 w-3 sm:block" />
+      <div className="mx-auto max-w-container px-4 pb-16 pt-12 text-center md:pb-24 md:pt-16">
         <p className="inline-flex items-center rounded-full border border-line bg-white px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-ink-muted">
           Pesan hari ini, tiba mulai besok
         </p>
@@ -99,12 +103,19 @@ function Hero() {
             Lihat Koleksi
           </Link>
         </div>
-        <img
-          src={heroPhoto}
-          alt="Rangkaian bunga segar Flowrys"
-          className="mx-auto mt-10 w-full max-w-3xl rounded-card object-cover"
-        />
       </div>
+      <img
+        src={heroLeft}
+        alt=""
+        aria-hidden="true"
+        className="animate-float pointer-events-none absolute -left-4 bottom-0 h-32 w-auto md:h-56"
+      />
+      <img
+        src={heroRight}
+        alt=""
+        aria-hidden="true"
+        className="animate-float pointer-events-none absolute -right-4 bottom-0 h-32 w-auto md:h-56"
+      />
     </section>
   );
 }
