@@ -1,5 +1,5 @@
 import { lazy, useEffect } from "react";
-import { createBrowserRouter, Outlet, useLocation } from "react-router-dom";
+import { createBrowserRouter, Navigate, Outlet, useLocation } from "react-router-dom";
 import { ProtectedRoute } from "../routes/ProtectedRoute.jsx";
 
 const Home = lazy(() => import("../pages/Home.jsx"));
@@ -10,6 +10,7 @@ const Checkout = lazy(() => import("../pages/Checkout.jsx"));
 const NotFound = lazy(() => import("../pages/NotFound.jsx"));
 const AdminLogin = lazy(() => import("../pages/admin/Login.jsx"));
 const AdminDashboard = lazy(() => import("../pages/admin/Dashboard.jsx"));
+const AdminCategories = lazy(() => import("../pages/admin/Categories.jsx"));
 
 function RootLayout() {
   const { pathname, hash } = useLocation();
@@ -45,9 +46,14 @@ export const router = createBrowserRouter([
         path: "admin",
         element: (
           <ProtectedRoute>
-            <AdminDashboard />
+            <Outlet />
           </ProtectedRoute>
         ),
+        children: [
+          { index: true, element: <Navigate to="produk" replace /> },
+          { path: "produk", element: <AdminDashboard /> },
+          { path: "kategori", element: <AdminCategories /> },
+        ],
       },
       { path: "*", element: <NotFound /> },
     ],

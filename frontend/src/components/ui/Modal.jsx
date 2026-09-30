@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function Modal({ title, onClose, children }) {
+export function Modal({ title, onClose, children, wide = false }) {
   const dialogRef = useRef(null);
 
   useEffect(() => {
@@ -28,7 +28,9 @@ export function Modal({ title, onClose, children }) {
         aria-modal="true"
         aria-label={title}
         tabIndex={-1}
-        className="w-full max-w-md rounded-card bg-white p-6 outline-none"
+        className={`max-h-[90dvh] w-full overflow-y-auto rounded-card bg-white p-5 outline-none md:p-6 ${
+          wide ? "max-w-2xl" : "max-w-md"
+        }`}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
