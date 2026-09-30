@@ -20,21 +20,22 @@ export function CategoryCard({ category, index, count, minPrice, illustration, d
         aria-label={`${category.name}, ${count} produk`}
         className="group block rounded-arch bg-white p-4 pb-6 text-center transition hover:shadow-card"
       >
-        <div className={`rounded-arch px-4 pb-6 pt-8 ${pastelBySlug[category.slug] ?? "bg-cream-100"}`}>
+        <div className={`relative overflow-hidden rounded-arch px-3 pb-4 pt-5 ${pastelBySlug[category.slug] ?? "bg-cream-100"}`}>
           <p className="text-[11px] font-bold tracking-[0.18em] text-ink-muted">
             0{index + 1}
           </p>
-          <img
-            src={image}
-            alt=""
-            aria-hidden="true"
-            className="mx-auto mt-2 h-32 w-32 rounded-full bg-white/60 object-cover p-2"
-            onError={(e) => {
-              if (e.currentTarget.src !== emptyState) e.currentTarget.src = emptyState;
-            }}
-          />
+          <div className="relative my-1 flex h-44 w-full items-center justify-center">
+            <img
+              src={image}
+              alt={category.name}
+              className="h-full w-full scale-125 object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-[1.35]"
+              onError={(e) => {
+                if (e.currentTarget.src !== emptyState) e.currentTarget.src = emptyState;
+              }}
+            />
+          </div>
           {minPrice > 0 ? (
-            <p className="mx-auto mt-3 inline-block -rotate-6 rounded-2xl bg-white px-3 py-1.5 text-left shadow-nav">
+            <p className="relative z-10 mx-auto mt-2 inline-block -rotate-6 rounded-2xl bg-white px-3 py-1.5 text-left shadow-nav">
               <span className="block text-[10px] font-bold tracking-wider text-ink-muted">
                 MULAI
               </span>
