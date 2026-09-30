@@ -203,8 +203,8 @@ export function ProductForm({
           Tampilkan di unggulan
         </label>
       </div>
-      <button type="submit" disabled={isSubmitting} className="btn-primary w-full">
-        {product ? "Simpan perubahan" : "Tambah produk"}
+      <button type="submit" disabled={isSubmitting} className="btn-primary w-full disabled:opacity-60">
+        {isSubmitting ? "Menyimpan..." : product ? "Simpan perubahan" : "Tambah produk"}
       </button>
     </form>
   );

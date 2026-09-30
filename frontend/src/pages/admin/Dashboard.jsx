@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { Seo } from "../../components/Seo.jsx";
 import { Modal } from "../../components/ui/Modal.jsx";
@@ -13,6 +14,7 @@ import { useCategories, useCatalog } from "../../features/products/hooks/useCata
 import { productService } from "../../services/productService.js";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: categories = [] } = useCategories();
   const { data: catalog } = useCatalog();
@@ -20,7 +22,6 @@ export default function AdminDashboard() {
 
   const [formState, setFormState] = useState(null); // null | { product? }
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [saving, setSaving] = useState(false);
   const [serverImages, setServerImages] = useState([]);
 
   const existingSlugs = (catalog?.data ?? []).map((p) => ({ id: p.id, slug: p.slug }));
@@ -36,8 +37,9 @@ export default function AdminDashboard() {
     }
   }, [formState]);
 
+  // Form tidak di-unmount saat menyimpan agar file yang ditampung tidak hilang
+  // bila simpan gagal dan pengguna mencoba lagi.
   async function handleFormSubmit(input, { files = [] } = {}) {
-    setSaving(true);
     try {
       const saved = await saveProduct({ id: formState?.product?.id, input });
       // Mode tambah: unggah file yang ditampung setelah produk dibuat.
@@ -49,8 +51,9 @@ export default function AdminDashboard() {
         if (failed > 0) toast(`${failed} foto gagal diunggah. Coba lagi dari form ubah.`);
       }
       setFormState(null);
-    } finally {
-      setSaving(false);
+    } catch (error) {
+      // Token mati (misal database di-fresh): paksa login ulang.
+      if (error?.code === "UNAUTHORIZED") navigate("/admin/login");
     }
   }
 
@@ -115,19 +118,15 @@ export default function AdminDashboard() {
             title={formState.product ? "Ubah produk" : "Tambah produk"}
             onClose={() => setFormState(null)}
           >
-            {saving ? (
-              <p className="py-8 text-center text-ink-muted">Menyimpan...</p>
-            ) : (
-              <ProductForm
-                product={formState.product}
-                categories={categories}
-                existingSlugs={existingSlugs}
-                onSubmit={handleFormSubmit}
-                serverImages={serverImages}
-                onUploadFile={handleUploadFile}
-                onDeleteServerImage={handleDeleteServerImage}
-              />
-            )}
+            <ProductForm
+              product={formState.product}
+              categories={categories}
+              existingSlugs={existingSlugs}
+              onSubmit={handleFormSubmit}
+              serverImages={serverImages}
+              onUploadFile={handleUploadFile}
+              onDeleteServerImage={handleDeleteServerImage}
+            />
           </Modal>
         ) : null}
 
