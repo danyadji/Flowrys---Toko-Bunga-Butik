@@ -106,9 +106,12 @@ export function CategoryManager({ categories, onChanged }) {
   }, [pendingFile, imageUrl, editing]);
 
   return (
-    <section aria-labelledby="kategori-heading" className="rounded-card bg-white p-4 md:p-6">
-      <h2 id="kategori-heading" className="font-heading text-lg font-bold">Kategori</h2>
-      <ul className="mt-3 space-y-2">
+    <section aria-labelledby="kategori-heading">
+      <h2 id="kategori-heading" className="sr-only">Kategori</h2>
+      <div className="grid items-start gap-5 lg:grid-cols-2">
+        <div className="rounded-card bg-white p-4 md:p-6">
+          <h3 className="font-heading text-lg font-bold">Daftar kategori</h3>
+          <ul className="mt-3 space-y-2">
         {categories.map((c) => (
           <li key={c.id} className="flex items-center justify-between gap-2 rounded-2xl bg-cream-50 px-4 py-2.5">
             <span className="flex min-w-0 items-center gap-3">
@@ -144,11 +147,13 @@ export function CategoryManager({ categories, onChanged }) {
           </li>
         ))}
       </ul>
+        </div>
 
-      <form onSubmit={handleSubmit} noValidate className="mt-4 space-y-3 border-t border-line pt-4">
-        <p className="text-sm font-bold text-plum-900">
-          {editing ? `Ubah "${editing.name}"` : "Kategori baru"}
-        </p>
+        <div className="rounded-card bg-white p-4 md:p-6">
+          <form onSubmit={handleSubmit} noValidate className="space-y-3">
+            <p className="font-heading text-lg font-bold text-plum-900">
+              {editing ? `Ubah "${editing.name}"` : "Tambah kategori"}
+            </p>
         <Input
           id="category-name"
           label="Nama kategori"
@@ -242,6 +247,8 @@ export function CategoryManager({ categories, onChanged }) {
       {error ? (
         <p role="alert" className="mt-2 text-[13px] text-danger">{error}</p>
       ) : null}
+        </div>
+      </div>
     </section>
   );
 }

@@ -17,7 +17,7 @@ export default function AdminCategories() {
     <>
       <Seo title="Kategori Admin" description="Kelola kategori produk Flowrys." />
       <AdminLayout title="Kategori">
-        <div className="max-w-2xl">
+        <div className="max-w-4xl">
           {isPending ? (
             <p className="rounded-card bg-white p-6 text-center text-ink-muted">Memuat kategori...</p>
           ) : isError ? (
